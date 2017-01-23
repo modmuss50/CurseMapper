@@ -5,28 +5,27 @@ import java.io.File
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.TimerTask
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     val projects = File("projects")
-    if(!projects.exists()){
+    if (!projects.exists()) {
         projects.mkdir()
     }
     val timer = Timer()
     timer.schedule(object : TimerTask() {
         override fun run() {
             println("Loading data")
-            for(user in FileUtils.readLines(File("users.txt"), Charset.defaultCharset())){
+            for (user in FileUtils.readLines(File("users.txt"), Charset.defaultCharset())) {
                 println("loading data for ${user}")
                 val curseData = CurseUtil(user)
                 curseData.load()
                 FileUtils.writeStringToFile(File("${user}_export.csv"), "${SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date())},${curseData.totalDownloads}${System.getProperty("line.separator")}", Charset.defaultCharset(), true)
                 var userFolder = File(projects, user)
-                if(!userFolder.exists()){
+                if (!userFolder.exists()) {
                     userFolder.mkdir()
                 }
                 for (set in curseData.downloads!!.entries) {
-                    FileUtils.writeStringToFile(File(userFolder, "${set.key.substring(set.key.indexOf("[") + 1,set.key.indexOf("]")).replace(" ", "_")}_export.csv"), "${SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date())},${set.value}${System.getProperty("line.separator")}", Charset.defaultCharset(), true)
+                    FileUtils.writeStringToFile(File(userFolder, "${set.key.substring(set.key.indexOf("[") + 1, set.key.indexOf("]")).replace(" ", "_")}_export.csv"), "${SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Date())},${set.value}${System.getProperty("line.separator")}", Charset.defaultCharset(), true)
                 }
             }
             println("Done")
