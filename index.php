@@ -9,10 +9,10 @@
  <title>Curse Data</title>
  <meta name="description" content="Curse Data">
 
- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
- <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+ <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
 <script type="text/javascript">
   google.load('visualization', '1', { packages: ['corechart', 'controls'] });
@@ -47,7 +47,14 @@ $.ajaxSetup({ cache: false });
             $dirname = ".";
             if(isset($_GET["user"])){
                 $dirname = "./projects/" . $_GET["user"];
-                echo '<p>'. $_GET["user"] . ' has a total download count of: ' . getTotalUserDownloads($_GET["user"]) . '</p>';
+                
+                $userFile = "./" . $_GET["user"] ."_export.csv";
+                if (file_exists($userFile)) {
+                    echo '<p>'. $_GET["user"] . ' has a total download count of: ' . getTotalUserDownloads($_GET["user"]) . '</p>';
+                } else {
+                  echo '<p>User not found, ask <a href="https://twitter.com/modmuss50">modmuss50</a> to see if its possible to be tracked.</p>';
+                  echo '<p><a href="https://curse.modmuss50.me/">Go Home</a></p>';
+                }
             }
 
             if ($handle = opendir($dirname)) {
@@ -91,3 +98,8 @@ $.ajaxSetup({ cache: false });
             }
             
         ?>
+
+        <a href="https://discord.gg/0tCDWb77cvetwm0e"><img border="0" alt="Discord" src="https://img.shields.io/badge/Discord-TeamReborn-738bd7.svg"></a>
+        <a href="https://github.com/modmuss50/CurseMapper"><img border="0" alt="Discord" src="https://img.shields.io/github/stars/modmuss50/CurseMapper.svg"></a>
+        <a href="https://twitter.com/modmuss50"><img border="0" alt="Discord" src="https://img.shields.io/twitter/follow/modmuss50.svg?style=social&label=Follow"></a>
+
