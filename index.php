@@ -29,8 +29,9 @@ $.ajaxSetup({ cache: false });
         var data = new google.visualization.arrayToDataTable(arrayData);
         var view = new google.visualization.DataView(data);
         view.setColumns([0,1]);
+        var graphtitle = /[^/]*$/.exec(username)[0].replace("_export.csv", "");
         var options = {
-            title: username,
+            title: graphtitle,
             hAxis: {title: data.getColumnLabel(0), minValue: data.getColumnRange(0).min, maxValue: data.getColumnRange(0).max},
             vAxis: {title: data.getColumnLabel(1), minValue: data.getColumnRange(1).min, maxValue: data.getColumnRange(1).max},
             legend: 'none'
@@ -46,6 +47,7 @@ $.ajaxSetup({ cache: false });
             $dirname = ".";
             if(isset($_GET["user"])){
                 $dirname = "./projects/" . $_GET["user"];
+                echo '<p>'. $_GET["user"] . ' has a total download count of: ' . getTotalUserDownloads($_GET["user"]) . '</p>';
             }
 
             if ($handle = opendir($dirname)) {
@@ -60,7 +62,8 @@ $.ajaxSetup({ cache: false });
                         else {
                             $arr = explode("_", $file, 2);
                             $uname = $arr[0];
-                            echo  '<a href="http://curse.modmuss50.me/?user=' .${uname} .'">View all of ' .${uname} .'s projects</a>';
+                            echo  '<a href="./?user=' .${'uname'} .'">View all of ' .${'uname'} .'s projects</a>';
+                            echo '<p>'. ${'uname'} . ' has a total download count of: ' . getTotalUserDownloads(${'uname'}) . '</p>';
                         }
                         echo  '<div id="' . $name . '"></div>';
                         echo  '<script type="text/javascript">';
@@ -77,6 +80,14 @@ $.ajaxSetup({ cache: false });
                 $testlen = strlen($test);
                 if ($testlen > $strlen) return false;
                 return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+            }
+
+            function getTotalUserDownloads($user){
+                $file = "./${'user'}_export.csv";
+                $data = file($file);
+                $line = $data[count($data)-1];
+                
+                return number_format((int)substr($line, strpos($line, ",") + 1));
             }
             
         ?>
