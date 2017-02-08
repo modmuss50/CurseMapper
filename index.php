@@ -76,6 +76,12 @@ $.ajaxSetup({ cache: false });
                         echo  '<script type="text/javascript">';
                         echo  "google.setOnLoadCallback(drawChart('${name}'));";
                        echo'</script>';
+
+                       echo  '<script type="text/javascript">';
+                        echo  "$(window).resize(function(){drawChart('${name}');});";
+                       echo'</script>';
+
+    
                        
                     }
                 }
