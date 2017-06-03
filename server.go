@@ -17,7 +17,7 @@ const NewLine = "\n"
 
 func index(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "<html lang=\"en\"><body>"+NewLine)
-	files, _ := ioutil.ReadDir("./testData")
+	files, _ := ioutil.ReadDir("./curseData")
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), "_export.csv") {
 			username := strings.Replace(f.Name(), "_export.csv", "", -1)
@@ -35,7 +35,7 @@ func userpage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL)
 	username := strings.Replace(r.URL.String(), "/user/", "", -1)
 	fmt.Println(username)
-	files, _ := ioutil.ReadDir("./testData/projects/" + username)
+	files, _ := ioutil.ReadDir("./curseData/projects/" + username)
 	for _, f := range files {
 		if strings.HasSuffix(f.Name(), "_export.csv") {
 			io.WriteString(w, "<p>"+f.Name()+"</p>"+NewLine)
@@ -102,7 +102,7 @@ func drawChart(w http.ResponseWriter, r *http.Request) {
 func readData(name string) ([]time.Time, []float64) {
 	var xvalues []time.Time
 	var yvalues []float64
-	err := util.File.ReadByLines("./testData/"+name, func(line string) error {
+	err := util.File.ReadByLines("./curseData/"+name, func(line string) error {
 		parts := strings.Split(line, ",")
 		download := parseFloat64(parts[1])
 		timeStr := parts[0]
