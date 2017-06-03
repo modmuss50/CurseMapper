@@ -1,83 +1,19 @@
-group 'CurseMapper'
-version '1.0.0'
+plugins {
+    id 'org.echocat.golang' version '0.1.15'
+}
 
-buildscript {
-    ext.kotlin_version = '1.0.5'
+group 'github.com/modmuss50/CurseMapper'
 
-    repositories {
-        mavenCentral()
-    }
+version = "1.0.0"
+
+def ENV = System.getenv()
+if (ENV.BUILD_NUMBER) {
+    version = version + "." + "${System.getenv().BUILD_NUMBER}"
+}
+
+golang {
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        build 'github.com/bwmarrin/discordgo'
     }
+    platforms = System.getProperty("platforms", "linux-amd64,windows-amd64,darwin-amd64")
 }
-
-apply plugin: 'java'
-apply plugin: 'kotlin'
-apply plugin: 'application'
-
-sourceCompatibility = 1.8
-
-mainClassName = "me.modmuss50.cursemapper.CurseMapperKt"
-
-repositories {
-    mavenCentral()
-}
-
-configurations {
-	shade
-	compile.extendsFrom shade
-}
-
-dependencies {
-	shade "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-	shade group: 'com.google.guava', name: 'guava', version: '21.0'
-	shade group: 'commons-io', name: 'commons-io', version: '2.5'
-}
-
-
-sourceSets {
-	main.compileClasspath += configurations.shade;
-	main.runtimeClasspath += configurations.shade;
-	test.compileClasspath += configurations.shade;
-	test.runtimeClasspath += configurations.shade;
-}
-
-
-jar {
-	from {
-		configurations.shade.each {dep ->
-			from(project.zipTree(dep)) {
-				exclude 'META-INF', 'META-INF/**'
-			}
-		}
-	}
-	manifest {
-		attributes 'Implementation-Title': 'Cursemapper',
-			'Implementation-Version': version,
-			'Main-Class': "me.modmuss50.cursemapper.CurseMapperKt"
-	}
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	exclude('**/*.jar')
-}
-
-task graphJar(type: Jar) {
-	from {
-		configurations.shade.each {dep ->
-			from(project.zipTree(dep)) {
-				exclude 'META-INF', 'META-INF/**'
-			}
-		}
-	}
-	manifest {
-		attributes 'Implementation-Title': 'Cursemapper',
-			'Implementation-Version': version,
-			'Main-Class': "me.modmuss50.cursemapper.CurseGraphKt"
-	}
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	from sourceSets.main.output
-	exclude('**/*.jar')
-	classifier = "chart"
-}
-
-assemble.dependsOn(graphJar)
