@@ -104,8 +104,8 @@ func drawChart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	buffer := bytes.NewBuffer([]byte{})
-	graph.Render(chart.PNG, buffer)
-	w.Header().Set("Content-Type", chart.ContentTypePNG)
+	graph.Render(chart.SVG, buffer)
+	w.Header().Set("Content-Type", chart.ContentTypeSVG)
 	pngCache.Set(r.URL.String(), buffer.Bytes(), cache.DefaultExpiration)
 	w.Write(buffer.Bytes())
 }
