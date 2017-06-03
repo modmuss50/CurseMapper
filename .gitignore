@@ -5,3 +5,4 @@
 /.idea/
 /users.txt
 *.csv
+/vendor/

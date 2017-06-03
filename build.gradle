@@ -13,7 +13,8 @@ if (ENV.BUILD_NUMBER) {
 
 golang {
     dependencies {
-        build 'github.com/bwmarrin/discordgo'
+        build 'github.com/wcharczuk/go-chart'
+        build 'github.com/patrickmn/go-cache'
     }
     platforms = System.getProperty("platforms", "linux-amd64,windows-amd64,darwin-amd64")
 }

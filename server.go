@@ -11,9 +11,11 @@ import (
 	"strings"
 	"github.com/wcharczuk/go-chart/util"
 	"strconv"
+	"github.com/patrickmn/go-cache"
 )
 
 const NewLine = "\n"
+var pngCache  = cache.New(15*time.Minute, 15*time.Minute)
 
 func index(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "<html lang=\"en\"><body>"+NewLine)
@@ -47,6 +49,14 @@ func userpage(w http.ResponseWriter, r *http.Request) {
 }
 
 func drawChart(w http.ResponseWriter, r *http.Request) {
+	png, found := pngCache.Get(r.URL.String())
+	if found {
+		fmt.Println("Using cache copy of :"+ r.URL.String())
+		w.Write(png.([]byte))
+		return
+	}
+	fmt.Println("generating new copy of :"+ r.URL.String())
+
 	fmt.Println(r.URL.String())
 	username := strings.Replace(r.URL.String(), "/chart/", "", -1)
 
@@ -96,6 +106,7 @@ func drawChart(w http.ResponseWriter, r *http.Request) {
 	buffer := bytes.NewBuffer([]byte{})
 	graph.Render(chart.PNG, buffer)
 	w.Header().Set("Content-Type", chart.ContentTypePNG)
+	pngCache.Set(r.URL.String(), buffer.Bytes(), cache.DefaultExpiration)
 	w.Write(buffer.Bytes())
 }
 
