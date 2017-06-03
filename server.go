@@ -49,12 +49,12 @@ func userpage(w http.ResponseWriter, r *http.Request) {
 }
 
 func drawChart(w http.ResponseWriter, r *http.Request) {
-	png, found := pngCache.Get(r.URL.String())
-	if found {
-		fmt.Println("Using cache copy of :"+ r.URL.String())
-		w.Write(png.([]byte))
-		return
-	}
+	//png, found := pngCache.Get(r.URL.String())
+	//if found {
+	//	fmt.Println("Using cache copy of :"+ r.URL.String())
+	//	w.Write(png.([]byte))
+	//	return
+	//}
 	fmt.Println("generating new copy of :"+ r.URL.String())
 
 	fmt.Println(r.URL.String())
@@ -106,7 +106,7 @@ func drawChart(w http.ResponseWriter, r *http.Request) {
 	buffer := bytes.NewBuffer([]byte{})
 	graph.Render(chart.SVG, buffer)
 	w.Header().Set("Content-Type", chart.ContentTypeSVG)
-	pngCache.Set(r.URL.String(), buffer.Bytes(), cache.DefaultExpiration)
+	//pngCache.Set(r.URL.String(), buffer.Bytes(), cache.DefaultExpiration)
 	w.Write(buffer.Bytes())
 }
 
